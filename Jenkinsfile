@@ -6,7 +6,8 @@ pipeline {
     }
 
     environment {
-        SONAR_TOKEN = credentials('sonarqube') // ID tokena z Jenkins Credentials
+        // Token do SonarQube przypisany w Jenkins → Credentials
+        SONAR_TOKEN = credentials('sonarqube')
     }
 
     stages {
@@ -25,13 +26,12 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('MySonar') {
-                    bat '''
-                        sonar-scanner ^
+                    bat """
+                        mvn sonar:sonar ^
                         -Dsonar.projectKey=logowanie ^
-                        -Dsonar.sources=src ^
-                        -Dsonar.java.binaries=target/classes ^
+                        -Dsonar.host.url=%SONAR_HOST_URL% ^
                         -Dsonar.login=%SONAR_TOKEN%
-                    '''
+                    """
                 }
             }
         }
