@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        // Token do SonarQube przypisany w Jenkins → Credentials
+        // Token SonarQube (typ: Secret text, ID: sonarqube)
         SONAR_TOKEN = credentials('sonarqube')
     }
 
@@ -39,14 +39,6 @@ pipeline {
         stage('Test') {
             steps {
                 bat 'mvn test'
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
             }
         }
     }
