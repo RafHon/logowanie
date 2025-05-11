@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        // Token SonarQube (typ: Secret text, ID: sonarqube)
         SONAR_TOKEN = credentials('sonarqube')
     }
 
@@ -40,6 +39,19 @@ pipeline {
             steps {
                 bat 'mvn test'
             }
+        }
+    }
+
+    post {
+        success {
+            mail to: 'rafahon088@polsl.pl',
+                 subject: "✔️ Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build zakończony sukcesem.\nSprawdź: ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: 'rafahon088@polsl.pl',
+                 subject: "❌ Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build nie powiódł się.\nSprawdź szczegóły: ${env.BUILD_URL}"
         }
     }
 }
